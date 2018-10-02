@@ -9,12 +9,12 @@ const IMG_SRC = "images/img/man.png";
 const WIDTH = 64;
 const HEIGHT = 64;
 export default class OtherMan extends Sprite {
-  // 暂持存储状态，强制更新画面用
-  // private horizontalStatus: Direction = Direction.Stand;
+  // 暂持存储状态，比较是瞬间更新
+  horizontalStatus = Direction.Stand;
   constructor() {
     super(IMG_SRC, WIDTH, HEIGHT);
     this.frame = 0;
-    // public horizontal: Direction = Direction.Stand;
+    // public horizontal = Direction.Stand;
     this.xSpeed = 3;
     this.ySpeed = 2;
     this.xNear = 0;
@@ -31,6 +31,8 @@ export default class OtherMan extends Sprite {
     // 存储渐进坐标
     this.xNear = this.x;
     this.yNear = this.y;
+    // 记录是否刷新
+    this.refresh = false;
   }
   /**
    * 动画
@@ -60,26 +62,41 @@ export default class OtherMan extends Sprite {
     const yDistance = yNear < this.ySpeed ? yNear : this.ySpeed;
     this.y = yDistance + this.yNear;
     this.yNear = this.y;
-    if (yDistance < -1.15)
+
+
+    // 更新动作
+    if (yDistance < -2)
       this.vertical = Direction.Top;
-    else if (yDistance > -0.85)
+    else if (yDistance > -0)
       this.vertical = Direction.Down;
     else if (xDistance < 0)
       this.vertical = Direction.Left;
     else if (xDistance > 0)
       this.vertical = Direction.Right;
+    else if (this.x < BaseTool.width / 2)
+      this.vertical = Direction.Left;
+    else if (this.x > BaseTool.width / 2)
+      this.vertical = Direction.Right;
+
+
+    if (this.horizontalStatus != this.vertical) {
+      this.refresh = true;
+    } else {
+      this.refresh = false;
+    }
+    this.horizontalStatus = this.vertical;
   }
   /**
    * 水平移动
    */
   horizontalFun() {
     if (this.vertical === Direction.Left) {
-      if (this.frame === 10)
+      if (this.frame === 10 || this.refresh)
         this.sx = 3 * WIDTH;
       if (this.frame === 20)
         this.sx = 4 * WIDTH;
     } else if (this.vertical === Direction.Right) {
-      if (this.frame === 10)
+      if (this.frame === 10 || this.refresh)
         this.sx = 5 * WIDTH;
       if (this.frame === 20)
         this.sx = 6 * WIDTH;
@@ -89,10 +106,10 @@ export default class OtherMan extends Sprite {
    * 上下移动
    */
   verticalFun() {
-    if (this.vertical === Direction.Top) {
+    if (this.vertical === Direction.Top || this.refresh) {
       this.sx = 2 * WIDTH;
       // 向下
-    } else if (this.vertical === Direction.Down) {
+    } else if (this.vertical === Direction.Down || this.refresh) {
       this.sx = 1 * WIDTH;
     }
   }

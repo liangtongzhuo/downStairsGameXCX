@@ -1,9 +1,12 @@
 /**
  * 基础信息
  */
-export class BaseTool {}
-BaseTool.width = window.innerWidth;
-BaseTool.height = window.innerHeight;
+export class BaseTool {
+  static width = window.innerWidth;
+  static height = window.innerHeight;
+
+}
+BaseTool
 /**
  * 每一帧渲染图
  */
@@ -21,4 +24,4 @@ export let Direction;
 })(Direction || (Direction = {}));
 
 // 地址配置
-export const url = '192.168.71.201';
+export const url = '192.168.1.104';

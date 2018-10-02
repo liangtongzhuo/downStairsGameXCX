@@ -12,6 +12,11 @@
 	"libVersion": "2.3.0",
 	"appid": "wxa1ccb650370df6fd",
 	"projectname": "weChat",
+	"scripts": {
+		"beforeCompile": "",
+		"beforePreview": "",
+		"beforeUpload": ""
+	},
 	"condition": {
 		"search": {
 			"current": -1,
