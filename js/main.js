@@ -7,6 +7,7 @@ import DataBus from "./dataStatus/dataBus";
 import initMap from "./http/initMap";
 import OtherManModel from "./model/OtherManModel";
 import Man from "./player/Man";
+import BackGround from "./runtime/background";
 import "./websocket/index.js";
 /**
  * 游戏主函数
@@ -16,6 +17,7 @@ export default class Main {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d');
     this.dataBus = new DataBus();
+    this.backGround = new BackGround();
     // 自己人物
     this.man = new Man();
   }
@@ -90,6 +92,7 @@ export default class Main {
    */
   update() {
     this.dataBus.update();
+    this.backGround.update();
     this.dataBus.floors.forEach(floor => floor.update());
     this.man.update();
     // 更新其它用户
@@ -108,6 +111,7 @@ export default class Main {
    */
   render() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.backGround.drawToCanvas(this.ctx);
     this.dataBus.floors.forEach(floor => floor.drawToCanvas(this.ctx));
     this.man.drawToCanvas(this.ctx);
     // 更新其它用户
@@ -120,9 +124,48 @@ export default class Main {
   }
   // 实现游戏帧循环
   loop() {
+    this.gameStartOrEnd();
     this.create();
     this.update();
     this.render();
     RequestAnimationFrame(this.loop.bind(this));
+  }
+  /**
+   * 游戏结束逻辑
+   */
+  gameStartOrEnd() {
+    // 计算比赛开始了多少秒
+    this.dataBus.startEndTime = (Date.now() - this.dataBus.map.date) / 1000;
+    // 游戏死亡
+    if (this.dataBus.gameOver == 10) {
+      this.dataBus.gameOver = 11;      
+      wx.showModal({
+        title: 'GAME OVER',
+        content: '等待下次开启时间，一起开车',
+        showCancel: false,
+        success(res) {
+          console.log(res.confirm);
+
+        }
+      });
+    }
+    // 游戏结束
+    if (this.dataBus.startEndTime > 60 && this.dataBus.gameOver == 5) {
+      this.dataBus.gameOver = 11;      
+      wx.showModal({
+        title: 'GAME OVER',
+        content: '等待下次开启时间，一起开车',
+        showCancel: false,
+        success: (res) => {
+          // 初始化数据
+          this.dataBus.floors = [];
+          this.man.x = BaseTool.width / 2;
+          this.man.y = 70;
+          initMap();
+          this.dataBus.gameOver = 5;
+        }
+      });
+    }
+    console.log(this.dataBus.gameOver);
   }
 }
