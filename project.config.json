@@ -10,8 +10,8 @@
 	},
 	"compileType": "game",
 	"libVersion": "2.3.0",
-	"appid": "wxa1ccb650370df6fd",
-	"projectname": "weChat",
+	"appid": "wxf53630cac8234eb5",
+	"projectname": "down",
 	"scripts": {
 		"beforeCompile": "",
 		"beforePreview": "",

@@ -9,10 +9,13 @@ import {
   BaseTool,
   url
 } from "../base/baseTool";
+import Man from "../player/Man";
 import OtherManModel from "../model/OtherManModel";
 import DataBus from "../dataStatus/dataBus";
 
+
 const dataBus = new DataBus();
+const man = new Man();
 const wsurl = `ws://${url}:3002?userId=${dataBus.userId}`;
 let websocket;
 let isConnet = false;
@@ -45,13 +48,15 @@ function initWs() {
   setInterval(() => {
     // wx 未连接直接返回
     if (!isConnet) return;
+    if (man.visible) {
+      const x = dataBus.man.point.x / BaseTool.width;
+      const y = dataBus.man.point.y + dataBus.map.y;
+      const otherManModel = new OtherManModel(dataBus.userId, x, y);
+      wx.sendSocketMessage({
+        data: JSON.stringify(otherManModel)
+      });
+    }
 
-    const x = dataBus.man.point.x / BaseTool.width;
-    const y = dataBus.man.point.y + dataBus.map.y;
-    const otherManModel = new OtherManModel(dataBus.userId, x, y);
-    wx.sendSocketMessage({
-      data: JSON.stringify(otherManModel)
-    });
   }, 30);
   /**
    * 服务器关闭

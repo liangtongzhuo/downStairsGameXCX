@@ -31,7 +31,11 @@ export default class DataBus {
     this.otherMans = {};
     // userId
     this.userId = Date.now() + "";
-    // gameOver，5 是正常，9 游戏时间到了，10 死亡，11 表示弹窗打开了
+    // 当前的分数
+    this.score = 1;
+    // 总分数
+    this.totalScore = 0;
+    // gameOver，5 是正常，9 游戏时间到了，10 死亡没有弹窗，11 死亡弹窗
     this.gameOver = 5;
     // 游戏进行时间
     this.startEndTime = -1;

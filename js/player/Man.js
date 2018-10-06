@@ -27,6 +27,8 @@ export default class Man extends Sprite {
     // 显示屏幕的位置
     this.x = (BaseTool.width - this.width) / 2;
     this.y = 70;
+
+    return Man.instance;
   }
   // 更新动画
   update() {
@@ -45,10 +47,17 @@ export default class Man extends Sprite {
   collisionDetectionFloor(floor) {
     if (!this.visible || !floor.visible)
       return false;
-    return !!(floor.y <= this.y + this.height &&
+    const bool = !!(floor.y <= this.y + this.height &&
       floor.y + floor.height >= this.y + this.height &&
       floor.x <= this.x + this.width &&
       floor.x + floor.width >= this.x);
+
+    // 没有碰撞
+    if (bool && !floor.collision) {
+      floor.collision = true;      
+      this.dataBus.score++;
+    }
+    return bool;
   }
   /**
    * 水平移动
@@ -103,3 +112,5 @@ export default class Man extends Sprite {
 
   }
 }
+
+Man.instance = new Man();
